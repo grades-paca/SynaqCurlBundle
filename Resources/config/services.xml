@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="synaq_curl.client.class">Synaq\CurlBundle\Curl\Wrapper</parameter>
+        <parameter key="synaq_curl.user_agent"/>
+        <parameter key="synaq_curl.cookie_file"/>
+        <parameter key="synaq_curl.follow_redirects"/>
+        <parameter key="synaq_curl.referrer"/>
+        <parameter key="synaq_curl.options"/>
+        <parameter key="synaq_curl.headers"/>
+    </parameters>
+
+    <services>
+        <service id="synaq_curl.client" class="%synaq_curl.client.class%">
+            <argument>%synaq_curl.user_agent%</argument>
+            <argument>%synaq_curl.cookie_file%</argument>
+            <argument>%synaq_curl.follow_redirects%</argument>
+            <argument>%synaq_curl.referrer%</argument>
+            <argument>%synaq_curl.options%</argument>
+            <argument>%synaq_curl.headers%</argument>
+        </service>
+    </services>
+
+</container>
