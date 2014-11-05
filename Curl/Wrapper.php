@@ -110,14 +110,14 @@ class Wrapper
      * @internal param array|string $vars
      * @return Response
      */
-    public function get($url, $params = array())
+    public function get($url, $params = array(), $headers = array())
     {
         if (!empty($params)) {
             $url .= (stripos($url, '?') !== false) ? '&' : '?';
             $url .= (is_string($params)) ? $params : http_build_query($params, '', '&');
         }
 
-        return $this->request('GET', $url);
+        return $this->request('GET', $url, $params, $headers);
     }
 
     /**
