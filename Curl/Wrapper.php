@@ -143,9 +143,9 @@ class Wrapper
      * @param array $headers
      * @return Response|boolean
      */
-    public function post($url, $params = array(), $headers = array())
+    public function post($url, $params = array(), $headers = array(), $options = array())
     {
-        return $this->request('POST', $url, $params, $headers);
+        return $this->request('POST', $url, $params, $headers, $options);
     }
 
     /**
@@ -175,7 +175,7 @@ class Wrapper
      * @throws \Exception
      * @return Response|boolean
      */
-    public function request($method, $url, $params = array(), $headers = array())
+    public function request($method, $url, $params = array(), $headers = array(), $options = array())
     {
         if (is_array($params)) {
             $params = http_build_query($params, '', '&');
@@ -186,7 +186,7 @@ class Wrapper
 
 
         $this->setRequestMethod($method);
-        $this->setRequestOptions($url, $params);
+        $this->setRequestOptions($url, $params, $options);
         $this->setRequestHeaders($headers);
 
         $rawResponse = curl_exec($this->request);
@@ -236,7 +236,7 @@ class Wrapper
      * @return void
      * @access protected
      **/
-    private function setRequestOptions($url, $vars)
+    private function setRequestOptions($url, $vars, $options = array())
     {
         curl_setopt($this->request, CURLOPT_URL, $url);
         if (!empty($vars)) {
@@ -259,7 +259,7 @@ class Wrapper
         }
 
         # Set any custom CURL options
-        foreach ($this->options as $option => $value) {
+        foreach (array_merge($options, $this->options) as $option => $value) {
             curl_setopt($this->request, constant('CURLOPT_' . str_replace('CURLOPT_', '', strtoupper($option))), $value);
         }
     }
