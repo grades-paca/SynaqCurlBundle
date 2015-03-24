@@ -117,7 +117,7 @@ class Wrapper
             $url .= (is_string($params)) ? $params : http_build_query($params, '', '&');
         }
 
-        return $this->request('GET', $url, $params, $headers);
+        return $this->request('GET', $url, array(), $headers);
     }
 
     /**
