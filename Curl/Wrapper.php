@@ -247,6 +247,7 @@ class Wrapper
         curl_setopt($this->request, CURLOPT_HEADER, true);
         curl_setopt($this->request, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->request, CURLOPT_USERAGENT, $this->userAgent);
+        curl_setopt($this->request, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
         if ($this->cookieFile) {
             curl_setopt($this->request, CURLOPT_COOKIEFILE, $this->cookieFile);
             curl_setopt($this->request, CURLOPT_COOKIEJAR, $this->cookieFile);
