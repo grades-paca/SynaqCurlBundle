@@ -95,9 +95,9 @@ class Wrapper
      * @internal param array|string $vars
      * @return Response object
      */
-    public function delete($url, $params = array())
+    public function delete($url, $params = array(), $fopen = false)
     {
-        return $this->request('DELETE', $url, $params);
+        return $this->request('DELETE', $url, $params, array(), array(), $fopen);
     }
 
     /**
@@ -110,14 +110,14 @@ class Wrapper
      * @internal param array|string $vars
      * @return Response
      */
-    public function get($url, $params = array(), $headers = array())
+    public function get($url, $params = array(), $headers = array(), $fopen = false)
     {
         if (!empty($params)) {
             $url .= (stripos($url, '?') !== false) ? '&' : '?';
             $url .= (is_string($params)) ? $params : http_build_query($params, '', '&');
         }
 
-        return $this->request('GET', $url, array(), $headers);
+        return $this->request('GET', $url, array(), $headers, array(), $fopen);
     }
 
     /**
@@ -130,9 +130,9 @@ class Wrapper
      * @internal param array|string $vars
      * @return Response
      */
-    public function head($url, $params = array())
+    public function head($url, $params = array(), $fopen = false)
     {
-        return $this->request('HEAD', $url, $params);
+        return $this->request('HEAD', $url, $params, array(), array(), $fopen);
     }
 
     /**
@@ -143,9 +143,9 @@ class Wrapper
      * @param array $headers
      * @return Response|boolean
      */
-    public function post($url, $params = array(), $headers = array(), $options = array())
+    public function post($url, $params = array(), $headers = array(), $options = array(), $fopen = false)
     {
-        return $this->request('POST', $url, $params, $headers, $options);
+        return $this->request('POST', $url, $params, $headers, $options, $fopen);
     }
 
     /**
@@ -155,12 +155,67 @@ class Wrapper
      *
      * @param string $url
      * @param array $params
+     * @param bool $fopen
+     * @return bool|Response
      * @internal param array|string $vars
-     * @return Response|boolean
      */
-    public function put($url, $params = array())
+    public function put($url, $params = array(), $fopen = false)
     {
-        return $this->request('PUT', $url, $params);
+        return $this->request('PUT', $url, $params, array(), array(), $fopen);
+    }
+
+    public function request($method, $url, $params = array(), $headers = array(), $options = array(), $fopen = false)
+    {
+        if ($fopen) {
+
+            return $this->fopenRequest($method, $url, $params, $headers);
+        } else {
+
+            return $this->curlRequest($method, $url, $params, $headers, $options);
+        }
+    }
+
+    public function fopenRequest($method, $url, $params, $headers)
+    {
+        $cparams = array(
+            'http' => array(
+                'method' => $method,
+                'ignore_errors' => true
+            )
+        );
+        if ($params !== null) {
+            $params = http_build_query($params);
+            if ($method == 'POST') {
+                $cparams['http']['content'] = $params;
+            } else {
+                $url .= '?' . $params;
+            }
+        }
+
+        if ($headers !== null) {
+            $params['http']['header'] = $headers;
+        }
+
+        $context = stream_context_create($cparams);
+        $fp = fopen($url, 'rb', false, $context);
+        if (!$fp) {
+            $res = false;
+        } else {
+            // If you're trying to troubleshoot problems, try uncommenting the
+            // next two lines; it will show you the HTTP response headers across
+            // all the redirects:
+            $meta = stream_get_meta_data($fp);
+            // var_dump($meta['wrapper_data']);
+            $res = stream_get_contents($fp);
+        }
+
+        if ($res === false) {
+            throw new CurlException("$method $url failed: $php_errormsg");
+        }
+
+        $response = new Response($res, true);
+
+        return $res;
     }
 
     /**
@@ -175,7 +230,7 @@ class Wrapper
      * @throws \Exception
      * @return Response|boolean
      */
-    public function request($method, $url, $params = array(), $headers = array(), $options = array())
+    public function curlRequest($method, $url, $params = array(), $headers = array(), $options = array())
     {
         if (is_array($params)) {
             $params = http_build_query($params, '', '&');
@@ -192,7 +247,7 @@ class Wrapper
         $rawResponse = curl_exec($this->request);
 
         if ($rawResponse) {
-            $response = new Response($rawResponse);
+            $response = new Response($rawResponse, false);
         } else {
 
             throw new CurlException($this->error = curl_errno($this->request).' - '.curl_error($this->request));
