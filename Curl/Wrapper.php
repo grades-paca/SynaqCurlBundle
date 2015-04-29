@@ -171,7 +171,7 @@ class Wrapper
             return $this->fopenRequest($method, $url, $params, $headers);
         } else {
 
-            return $this->curlRequest($method, $url, $params, $headers, $options);
+            return $this->curlRequest($method, $url, $params, $data = null, $headers, $options);
         }
     }
 
@@ -180,11 +180,15 @@ class Wrapper
         $cparams = array(
             'http' => array(
                 'method' => $method,
-                'ignore_errors' => true
+                'ignore_errors' => true,
             )
         );
         if ($params !== null) {
-            $params = http_build_query($params);
+            if (is_array($params)) {
+                $params = http_build_query($params);
+            } else {
+                $cparams['http']['content'] = $params;
+            }
             if ($method == 'POST') {
                 $cparams['http']['content'] = $params;
             } else {
@@ -192,7 +196,7 @@ class Wrapper
             }
         }
 
-        if ($headers !== null) {
+        if ($headers !== null && count($headers) > 0) {
             $params['http']['header'] = $headers;
         }
 
@@ -205,7 +209,7 @@ class Wrapper
             // next two lines; it will show you the HTTP response headers across
             // all the redirects:
             $meta = stream_get_meta_data($fp);
-            // var_dump($meta['wrapper_data']);
+            $headers = $meta['wrapper_data'];
             $res = stream_get_contents($fp);
         }
 
@@ -213,9 +217,12 @@ class Wrapper
             throw new CurlException("$method $url failed: $php_errormsg");
         }
 
+        //join headers
+        $res = implode("\r\n", $headers) . "\r\n\r\n" . $res;
+
         $response = new Response($res, true);
 
-        return $res;
+        return $response;
     }
 
     /**
