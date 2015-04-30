@@ -171,7 +171,7 @@ class Wrapper
             return $this->fopenRequest($method, $url, $params, $headers);
         } else {
 
-            return $this->curlRequest($method, $url, $params, $data = null, $headers, $options);
+            return $this->curlRequest($method, $url, $params, $headers, $options);
         }
     }
 
