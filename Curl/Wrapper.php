@@ -220,7 +220,7 @@ class Wrapper
         //join headers
         $res = implode("\r\n", $headers) . "\r\n\r\n" . $res;
 
-        $response = new Response($res, true);
+        $response = new Response($res);
 
         return $response;
     }
