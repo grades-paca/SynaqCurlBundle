@@ -197,7 +197,7 @@ class Wrapper
         }
 
         if ($headers !== null && count($headers) > 0) {
-            $params['http']['header'] = $headers;
+            $cparams['http']['header'] = $headers;
         }
 
         $context = stream_context_create($cparams);
