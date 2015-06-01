@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "531b44dcf85bf4d6585609296004845c",
+    "hash": "10d6e18dfa3433ace5d050325c0316b6",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1239,7 +1239,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/60991776b3994cd8297b861e8ddc7f9c9500dedc",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/6b7d2094ca2a685a2cad846cb7cd7a30e8b9470f",
                 "reference": "60991776b3994cd8297b861e8ddc7f9c9500dedc",
                 "shasum": ""
             },
@@ -1485,7 +1485,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/b3383599a2f21f02766bc31875c2a7b9a50656cc",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/bd4258fbcb61df833e3ffc2fdd7e0fe6d9b69ada",
                 "reference": "b3383599a2f21f02766bc31875c2a7b9a50656cc",
                 "shasum": ""
             },
@@ -2080,7 +2080,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.3.2",
+        "php": ">=5.5",
         "ext-curl": "*"
     },
     "platform-dev": []
