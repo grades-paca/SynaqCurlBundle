@@ -204,9 +204,13 @@ class Wrapper
         $fp = false;
 
         $oldHandler = set_error_handler(function($errno, $errstr, $errfile, $errline) {
+            if (!preg_match('/fopen/', $errstr)) {
+
+                return false;
+            }
 
             throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
-        }, error_reporting());
+        }, E_WARNING);
 
         try {
             $fp = fopen($url, 'rb', false, $context);
