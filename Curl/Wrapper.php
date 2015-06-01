@@ -201,7 +201,22 @@ class Wrapper
         }
 
         $context = stream_context_create($cparams);
-        $fp = fopen($url, 'rb', false, $context);
+        $fp = false;
+
+        $oldHandler = set_error_handler(function($errno, $errstr, $errfile, $errline ) {
+
+            throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
+        });
+
+        try {
+            $fp = fopen($url, 'rb', false, $context);
+        } catch (\ErrorException $e) {
+
+            throw new CurlException("$method $url failed: " . $e->getMessage(), $e->getCode(), $e);
+        } finally {
+            set_error_handler($oldHandler);
+        }
+
         if (!$fp) {
             $res = false;
         } else {
@@ -211,10 +226,6 @@ class Wrapper
             $meta = stream_get_meta_data($fp);
             $headers = $meta['wrapper_data'];
             $res = stream_get_contents($fp);
-        }
-
-        if ($res === false) {
-            throw new CurlException("$method $url failed: $php_errormsg");
         }
 
         //join headers
