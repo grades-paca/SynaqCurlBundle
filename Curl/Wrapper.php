@@ -203,10 +203,10 @@ class Wrapper
         $context = stream_context_create($cparams);
         $fp = false;
 
-        $oldHandler = set_error_handler(function($errno, $errstr, $errfile, $errline ) {
+        $oldHandler = set_error_handler(function($errno, $errstr, $errfile, $errline) {
 
             throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
-        });
+        }, error_reporting());
 
         try {
             $fp = fopen($url, 'rb', false, $context);
