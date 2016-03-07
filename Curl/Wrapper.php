@@ -214,10 +214,10 @@ class Wrapper
 
         try {
             $fp = fopen($url, 'rb', false, $context);
+            set_error_handler($oldHandler);
         } catch (\ErrorException $e) {
 
             throw new CurlException("$method $url failed: " . $e->getMessage(), $e->getCode(), $e);
-        } finally {
             set_error_handler($oldHandler);
         }
 
